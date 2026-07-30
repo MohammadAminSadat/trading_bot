@@ -159,21 +159,21 @@ Create:
 
 Task 4.2 Enums
 
-- [] OrderType
-- [] TradeDirection
-- [] OrderStatus
-- [] IndicatorType
-- [] SignalType
+- [ ] OrderType
+- [ ] TradeDirection
+- [ ] OrderStatus
+- [ ] IndicatorType
+- [ ] SignalType
 
 ---
 
 Task 4.3 Utilities
 
 Implement:
-- [] UUID generator
-- [] Time utilities
-- [] String utilities
-- [] File utilities
+- [ ] UUID generator
+- [ ] Time utilities
+- [ ] String utilities
+- [ ] File utilities
 
 ---
 
@@ -190,10 +190,10 @@ Example:
 }
 ```
 Tasks:
-- [] Read JSON
-- [] Validate fields
-- [] Default values
-- [] Error handling
+- [ ] Read JSON
+- [ ] Validate fields
+- [ ] Default values
+- [ ] Error handling
 
 ---
 
@@ -202,13 +202,13 @@ Tasks:
 Create Logger
 
 Capabilities:
-- [] Console logging
-- [] File logging
-- [] Log levels:
-    - [] INFO
-    - [] DEBUG
-    - [] WARNING
-    - [] ERROR
+- [ ] Console logging
+- [ ] File logging
+- [ ] Log levels:
+    - [ ] INFO
+    - [ ] DEBUG
+    - [ ] WARNING
+    - [ ] ERROR
 
 ---
 
@@ -225,12 +225,12 @@ Guideline: Avoid throwing exceptions everywhere. Use `std::expected` (or an equi
 ---
 
 ### Milestone 8 — Testing
-- [] Install GoogleTest
-- [] Write first tests:
-    - [] Config Parser
-    - [] Logger
-    - [] Utilities
-    - [] Time conversion
+- [ ] Install GoogleTest
+- [ ] Write first tests:
+    - [ ] Config Parser
+    - [ ] Logger
+    - [ ] Utilities
+    - [ ] Time conversion
 
 Target: 100% passing tests
 
