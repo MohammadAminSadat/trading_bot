@@ -1,0 +1,8 @@
+add_subdirectory(Core)
+add_subdirectory(Reporting)
+add_subdirectory(Indicators)
+add_subdirectory(MarketData)
+add_subdirectory(Strategies)
+add_subdirectory(Execution)
+add_subdirectory(BackTesting)
+add_subdirectory(Optimization)
