@@ -31,7 +31,7 @@ struct Candle {
   TimeFrame time_frame;
   TimeStamp time_stamp;
 
-  Candle(Price open, Price high, Price low, Price close, std::uint64_t volume,
+  Candle(Price open, Price high, Price low, Price close, std::int64_t volume,
          TimeFrame time_frame, TimeStamp time_stamp)
       : open{open}, high{high}, low{low}, close{close}, volume{volume},
         time_frame{time_frame}, time_stamp{time_stamp} {};
