@@ -17,9 +17,12 @@ public:
   CSV(const CSV &other) = delete;
   CSV &operator=(const CSV &other) = delete;
 
-  CSVRow read_header();
+  CSVRow parse_header();
   CSVRow read_next();
   std::vector<CSVRow> parse_csv();
+
+  void set_path(std::filesystem::path &path, bool has_header = false);
+  void set_delimiter(std::string &delimiter);
 
 private:
   CSVRow parse_line(const std::string &line);
@@ -31,6 +34,7 @@ private:
   std::filesystem::path path;
   std::string delimiter;
   std::ifstream csv_file;
+  CSVRow header;
 };
 
 } // namespace TradingEngine::Core

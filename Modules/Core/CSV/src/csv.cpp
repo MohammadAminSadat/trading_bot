@@ -50,19 +50,20 @@ CSV &CSV::operator=(CSV &&other) noexcept {
   return *this;
 }
 
-CSVRow CSV::read_header() {
+CSVRow CSV::parse_header() {
   if (!has_header) {
     return {};
   }
   if (is_header_processed) {
-    return {};
+    return header;
   }
   std::string line;
   if (!std::getline(csv_file, line)) {
     return {};
   }
   is_header_processed = true;
-  return parse_line(line);
+  header = parse_line(line);
+  return header;
 }
 
 CSVRow CSV::read_next() {
@@ -76,7 +77,7 @@ CSVRow CSV::read_next() {
 std::vector<CSVRow> CSV::parse_csv() {
   std::vector<CSVRow> data;
   if (!is_header_processed) {
-    read_header();
+    parse_header();
   }
   if (is_cached) {
     return cache;
@@ -89,6 +90,25 @@ std::vector<CSVRow> CSV::parse_csv() {
   is_cached = true;
   cache = data;
   return data;
+}
+
+void CSV::set_path(std::filesystem::path &path_, bool has_header_) {
+  if (csv_file.is_open()) {
+    csv_file.close();
+  }
+  if (path_ == path) {
+    return;
+  }
+  csv_file.open(path);
+  is_cached = false;
+  cache.empty();
+  is_header_processed = false;
+  header.empty();
+  has_header = has_header_;
+}
+
+void CSV::set_delimiter(std::string &delimiter_) {
+  delimiter = delimiter_;
 }
 
 CSVRow CSV::parse_line(const std::string &line) {
