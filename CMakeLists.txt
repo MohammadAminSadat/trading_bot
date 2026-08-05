@@ -32,5 +32,9 @@ else()
 endif()
 find_package(Boost REQUIRED)
 enable_testing()
+
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+include(ClangFormat)
+
 add_subdirectory(Modules)
 add_subdirectory(App)

@@ -1,8 +1,8 @@
 #pragma once
 
 #include <chrono>
-#include <vector>
 #include <cstdint>
+#include <vector>
 
 namespace TradingEngine {
 namespace MarketData {
@@ -31,22 +31,25 @@ struct Candle {
   TimeFrame time_frame;
   TimeStamp time_stamp;
 
-  Candle(Price open, Price high, Price low, Price close, std::int64_t volume,
-         TimeFrame time_frame, TimeStamp time_stamp)
-      : open{open}, high{high}, low{low}, close{close}, volume{volume},
-        time_frame{time_frame}, time_stamp{time_stamp} {};
+  Candle(Price open, Price high, Price low, Price close, std::int64_t volume, TimeFrame time_frame,
+         TimeStamp time_stamp)
+      : open{open},
+        high{high},
+        low{low},
+        close{close},
+        volume{volume},
+        time_frame{time_frame},
+        time_stamp{time_stamp} {};
 
   [[nodiscard]] bool validate() const noexcept {
-    return (high >= open) && (high >= close) && (high >= low) &&
-           (low <= close) && (low <= open) && (volume >= 0);
+    return (high >= open) && (high >= close) && (high >= low) && (low <= close) && (low <= open) &&
+           (volume >= 0);
   }
   bool is_bullish() const noexcept { return (close >= open); }
   bool is_bearish() const noexcept { return close < open; }
   Price typical_price() const noexcept { return ((low + high + close) / 3); }
   Price median_price() const noexcept { return (high + low) / 2; }
-  Price weighted_close_price() const noexcept {
-    return ((low + high + 2 * close) / 4);
-  }
+  Price weighted_close_price() const noexcept { return ((low + high + 2 * close) / 4); }
 };
 
 class CandleSeries {

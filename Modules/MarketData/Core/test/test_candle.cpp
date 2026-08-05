@@ -1,23 +1,21 @@
-#include <gtest/gtest.h>
-#include <gmock/gmock.h>
-#include "Core/candle.hpp"
-
 #include <chrono>
 #include <cmath>
 #include <cstdint>
+#include <gmock/gmock.h>
+#include <gtest/gtest.h>
 #include <limits>
 #include <vector>
+
+#include "Core/candle.hpp"
 
 using namespace TradingEngine::MarketData;
 
 namespace {
 
 std::chrono::sys_seconds make_ts(int y, int m, int d) {
-  return std::chrono::sys_days{
-      std::chrono::year_month_day{
-          std::chrono::year{y},
-          std::chrono::month{static_cast<unsigned>(m)},
-          std::chrono::day{static_cast<unsigned>(d)}}};
+  return std::chrono::sys_days{std::chrono::year_month_day{
+      std::chrono::year{y}, std::chrono::month{static_cast<unsigned>(m)},
+      std::chrono::day{static_cast<unsigned>(d)}}};
 }
 
 } // namespace
@@ -280,9 +278,8 @@ TEST(CandleWeightedClosePriceTest, CloseIsZero) {
 TEST(CandleTimeFrameTest, EachTimeFrame) {
   auto ts = make_ts(2024, 1, 1);
 
-  for (auto tf : {TimeFrame::Unknown, TimeFrame::M10, TimeFrame::M30,
-                  TimeFrame::H1, TimeFrame::H2, TimeFrame::H4,
-                  TimeFrame::H12, TimeFrame::D1, TimeFrame::W1}) {
+  for (auto tf : {TimeFrame::Unknown, TimeFrame::M10, TimeFrame::M30, TimeFrame::H1, TimeFrame::H2,
+                  TimeFrame::H4, TimeFrame::H12, TimeFrame::D1, TimeFrame::W1}) {
     Candle c{10.0, 20.0, 5.0, 15.0, 100, tf, ts};
     EXPECT_EQ(c.time_frame, tf);
     EXPECT_TRUE(c.validate());
@@ -364,8 +361,8 @@ TEST(CandleSeriesPushBackTest, MultiplePushBacks) {
   auto ts = make_ts(2024, 1, 1);
 
   for (int i = 0; i < 100; ++i) {
-    series.push_back(Candle{double(i), double(i + 1), double(i - 1),
-                             double(i), i, TimeFrame::M10, ts});
+    series.push_back(
+        Candle{double(i), double(i + 1), double(i - 1), double(i), i, TimeFrame::M10, ts});
   }
   EXPECT_EQ(series.size(), 100);
   EXPECT_DOUBLE_EQ(series[0].open, 0.0);
@@ -514,8 +511,7 @@ TEST(CandleSeriesReserveTest, Reservations) {
 
   auto ts = make_ts(2024, 1, 1);
   for (int i = 0; i < 1000; ++i) {
-    series.push_back(Candle{double(i), double(i), double(i),
-                             double(i), i, TimeFrame::M10, ts});
+    series.push_back(Candle{double(i), double(i), double(i), double(i), i, TimeFrame::M10, ts});
   }
   EXPECT_EQ(series.size(), 1000);
 }
@@ -586,9 +582,13 @@ TEST(CandleEdgeCaseTest, FloatingPointPrecision) {
 
 TEST(CandleEdgeCaseTest, MaximumVolume) {
   auto ts = make_ts(2024, 1, 1);
-  Candle c{100.0, 110.0, 90.0, 105.0,
-            static_cast<std::uint64_t>(std::numeric_limits<std::int64_t>::max()),
-            TimeFrame::D1, ts};
+  Candle c{100.0,
+           110.0,
+           90.0,
+           105.0,
+           static_cast<std::uint64_t>(std::numeric_limits<std::int64_t>::max()),
+           TimeFrame::D1,
+           ts};
   EXPECT_TRUE(c.validate());
   EXPECT_EQ(c.volume, std::numeric_limits<std::int64_t>::max());
 }
