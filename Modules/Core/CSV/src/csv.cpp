@@ -5,7 +5,7 @@
 
 namespace TradingEngine::Core {
 
-CSV::CSV(std::filesystem::path path, std::string delimiter, bool has_header)
+CSVParser::CSVParser(std::filesystem::path path, std::string delimiter, bool has_header)
     : has_header{has_header}, delimiter{std::move(delimiter)} {
   if (!std::filesystem::exists(path)) {
     std::stringstream error;
@@ -22,12 +22,14 @@ CSV::CSV(std::filesystem::path path, std::string delimiter, bool has_header)
   this->path = std::move(path);
 }
 
-CSV::~CSV() {
+CSVParser::~CSVParser() {
   if (csv_file.is_open()) {
     csv_file.close();
   }
+  cache.clear();
+  header.clear();
 }
-CSV::CSV(CSV &&other) noexcept
+CSVParser::CSVParser(CSVParser &&other) noexcept
     : has_header{other.has_header},
       is_header_processed{other.is_header_processed},
       path{std::move(other.path)},
@@ -37,7 +39,7 @@ CSV::CSV(CSV &&other) noexcept
   other.is_header_processed = false;
 }
 
-CSV &CSV::operator=(CSV &&other) noexcept {
+CSVParser &CSVParser::operator=(CSVParser &&other) noexcept {
   if (this != &other) {
     has_header = other.has_header;
     is_header_processed = other.is_header_processed;
@@ -50,7 +52,7 @@ CSV &CSV::operator=(CSV &&other) noexcept {
   return *this;
 }
 
-CSVRow CSV::parse_header() {
+CSVRow CSVParser::parse_header() {
   if (!has_header) {
     return {};
   }
@@ -66,15 +68,7 @@ CSVRow CSV::parse_header() {
   return header;
 }
 
-CSVRow CSV::read_next() {
-  std::string line;
-  if (!std::getline(csv_file, line)) {
-    return {};
-  }
-  return parse_line(line);
-}
-
-std::vector<CSVRow> CSV::parse_csv() {
+std::vector<CSVRow> CSVParser::parse_csv() {
   std::vector<CSVRow> data;
   if (!is_header_processed) {
     parse_header();
@@ -92,7 +86,7 @@ std::vector<CSVRow> CSV::parse_csv() {
   return data;
 }
 
-void CSV::set_path(std::filesystem::path &path_, bool has_header_) {
+void CSVParser::set_path(std::filesystem::path &path_, bool has_header_) {
   if (csv_file.is_open()) {
     csv_file.close();
   }
@@ -101,17 +95,17 @@ void CSV::set_path(std::filesystem::path &path_, bool has_header_) {
   }
   csv_file.open(path);
   is_cached = false;
-  cache.empty();
+  cache.clear();
   is_header_processed = false;
-  header.empty();
+  header.clear();
   has_header = has_header_;
 }
 
-void CSV::set_delimiter(std::string &delimiter_) {
+void CSVParser::set_delimiter(std::string &delimiter_) {
   delimiter = delimiter_;
 }
 
-CSVRow CSV::parse_line(const std::string &line) {
+CSVRow CSVParser::parse_line(const std::string &line) {
   CSVRow fields;
   size_t position{0};
 

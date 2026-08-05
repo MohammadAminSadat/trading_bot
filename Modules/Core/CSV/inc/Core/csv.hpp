@@ -7,18 +7,18 @@
 
 namespace TradingEngine::Core {
 using CSVRow = std::vector<std::string>;
-class CSV {
+class CSVParser {
 public:
-  explicit CSV(std::filesystem::path path, std::string delimiter = ",", bool has_header = false);
-  virtual ~CSV();
-  CSV(CSV &&other) noexcept;
-  CSV &operator=(CSV &&other) noexcept;
+  explicit CSVParser(std::filesystem::path path, std::string delimiter = ",",
+                     bool has_header = false);
+  virtual ~CSVParser();
+  CSVParser(CSVParser &&other) noexcept;
+  CSVParser &operator=(CSVParser &&other) noexcept;
 
-  CSV(const CSV &other) = delete;
-  CSV &operator=(const CSV &other) = delete;
+  CSVParser(const CSVParser &other) = delete;
+  CSVParser &operator=(const CSVParser &other) = delete;
 
   CSVRow parse_header();
-  CSVRow read_next();
   std::vector<CSVRow> parse_csv();
 
   void set_path(std::filesystem::path &path, bool has_header = false);
