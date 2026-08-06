@@ -1,268 +1,176 @@
-# Trading Bot - Software Engineering Project Plan
+# NNFX Trading Engine
 
-> A software engineering-first approach to building a trading bot in C++, designed as a learning journey to master modern C++ development practices.
+A **modular algorithmic trading platform** built in modern C++20 — designed as
+both a reliable automated trading system and a deliberate exercise in
+professional software engineering.
 
-## Overview
+## Why this project exists
 
-This project treats the trading bot as a software engineering project first and a trading bot second. The goal is to become a better C++ developer, with every phase teaching new engineering skills rather than just adding features.
+This project serves two goals:
 
----
+1. **Build a trading engine** that implements the **No Nonsense Forex (NNFX)**
+   methodology, capable of downloading historical data, calculating indicators,
+   running deterministic back-tests, optimizing parameters, and eventually
+   executing trades through MetaTrader 5 on a Raspberry Pi.
 
-## Phase 1 — Foundation & Architecture
+2. **Master modern C++** by applying clean architecture, dependency injection,
+   test-driven development, and CI to a real, non-trivial application. Every
+   phase teaches new engineering skills — not just adds features.
 
-**Goal:** Build a production-quality project skeleton with clean architecture, development tools, and coding standards before writing any trading logic.
-
----
-
-### Milestone 1 — Project Planning
-
-#### Task 1.1 Define Requirements
-
-- [ ] Write a project vision document
-- [ ] Define functional requirements
-- [ ] Define non-functional requirements
-- [ ] Define future extensions (MT5, optimization, dashboard)
-
-**Deliverables:**
-- `docs/requirements.md`
+The project is written as if it were a **commercial-grade system**: modular,
+tested, documented, and designed for long-term maintainability.
 
 ---
 
-#### Task 1.2 Choose Technology Stack
+## Architecture
 
-Decide on:
-- [ ] C++20
-- [ ] CMake
-- [ ] Git
-- [ ] clang-format
-- [ ] clang-tidy
-- [ ] Catch2
-- [ ] fmt
-- [ ] spdlog
-- [ ] nlohmann/json
-- [ ] cpr or Boost.Beast (HTTP client)
-- [ ] SQLite
+```text
+                   ┌──────────────┐
+                   │  Strategies  │
+                   └──────┬───────┘
+                          │
+          ┌───────────────┼───────────────┐
+          ▼               ▼               ▼
+   ┌────────────┐  ┌────────────┐  ┌──────────────┐
+   │ Indicators │  │ BackTesting│  │ Optimization │
+   └─────┬──────┘  └─────┬──────┘  └──────┬───────┘
+         │               │                │
+         └───────────────┼────────────────┘
+                         ▼
+                 ┌──────────────┐
+                 │  MarketData  │
+                 └──────┬───────┘
+                        │
+         ┌──────────────┼──────────────┐
+         ▼              ▼              ▼
+   ┌──────────┐  ┌──────────┐  ┌────────────┐
+   │  Storage │  │Providers │  │    Core     │
+   │ (SQLite) │  │(Yahoo…)  │  │ (types/CSV) │
+   └──────────┘  └──────────┘  └────────────┘
+```
 
-**Deliverables:**
-- `docs/technology.md`
-
----
-
-### Milestone 2 — Software Architecture
-
-#### Task 2.1 High-Level Architecture
-
-Design:
-- [ ] Components
-- [ ] Dependencies
-- [ ] Data flow
-
-Draw UML:
-- [ ] Component Diagram
-- [ ] Package Diagram
+Modules are loosely coupled libraries exposed as CMake targets under the
+`TradingEngine` namespace. The engine flows from raw market data through
+indicators and strategies to back-testing and optimization.
 
 ---
 
-#### Task 2.2 Domain Model
+## Project structure
 
-Design:
-- [ ] Candle
-- [ ] Order
-- [ ] Position
-- [ ] Trade
-- [ ] Indicator
-- [ ] Strategy
-
-Create UML class diagrams.
+```text
+trading_bot/
+├── App/
+│   └── main.cpp              demo application
+├── Modules/
+│   ├── Core/
+│   │   └── CSV/              CSV parser with C++20 input iterator
+│   ├── MarketData/
+│   │   └── Core/             Candle, CandleSeries, TimeFrame types
+│   ├── Indicators/           indicator framework (planned)
+│   ├── Strategies/           strategy definitions (planned)
+│   ├── BackTesting/          deterministic back-tester (planned)
+│   ├── Optimization/         parameter optimization (planned)
+│   ├── Reporting/            performance metrics (planned)
+│   └── Execution/            broker integration (planned)
+├── docs/
+│   ├── requirements.md       functional and non-functional requirements
+│   ├── project_vision.md     design philosophy and long-term goals
+│   ├── technology.md         technology stack decisions
+│   └── future_extentions.md  roadmap beyond v1.0
+├── cmake/                    CMake helper modules (clang-format)
+├── database/                 historical CSV data (gitignored)
+└── .github/workflows/ci.yml  CI pipeline
+```
 
 ---
 
-#### Task 2.3 Project Structure
+## What is built so far
+
+| Module | Status |
+|--------|--------|
+| CSV parser (`Modules/Core/CSV`) | **Complete** — `CSVLineParser`, `CSVReader`, `CSVReaderIterator`, comprehensive tests, readme |
+| Market data types (`MarketData/Core`) | **Complete** — `Candle`, `CandleSeries`, `TimeFrame`, unit tests |
+| Build system | **Complete** — CMake, C++20, FetchContent (spdlog, Eigen, GoogleTest), Boost |
+| CI pipeline | **Complete** — GitHub Actions, Debug/Release × gcc/clang, test + format check |
+| Indicators | Planned |
+| Back-testing engine | Planned |
+| Strategy implementation | Planned |
+| Optimization engine | Planned |
+| MetaTrader 5 integration | Planned |
+
+---
+
+## Build and test
+
+### Prerequisites
+
+- **C++20 compiler** (GCC 14 or Clang 18)
+- **CMake** ≥ 3.25
+- **Boost** (headers + compiled libraries; the CI uses `libboost-all-dev`)
+
+All other dependencies (GoogleTest, spdlog, Eigen) are fetched automatically via
+CMake's `FetchContent`.
+
+### Build
 
 ```bash
-TradingBot/
-├── src/
-├── include/
-├── tests/
-├── docs/
-├── config/
-├── scripts/
-├── data/
-├── build/
-└── third_party/
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug
+cmake --build build --parallel
+```
+
+### Run tests
+
+```bash
+ctest --test-dir build --output-on-failure
+```
+
+### Run the demo
+
+```bash
+./build/App/TradingEngine
+```
+
+### Format
+
+```bash
+cmake --build build --target format
 ```
 
 ---
 
-### Milestone 3 — Development Environment
+## Technology stack
 
-#### Task 3.1 Repository
-
-- [ ] Create Git repository
-- [ ] Create .gitignore
-- [ ] Protect main branch
-- [ ] Create development branch
-
----
-
-#### Task 3.2 Build System
-
-Create `CMakeLists.txt`
-
-Requirements:
-- [ ] C++20
-- [ ] Warning flags
-- [ ] Debug build
-- [ ] Release build
+| Category | Choice |
+|----------|--------|
+| Language | C++20 |
+| Build system | CMake |
+| Compiler | GCC 14 / Clang 18 |
+| Testing | GoogleTest + GoogleMock |
+| Formatting | clang-format |
+| Logging | spdlog |
+| JSON configuration | nlohmann/json |
+| Linear algebra | Eigen |
+| Database | SQLite3 |
+| Networking | Boost.Beast + Boost.Asio |
+| CI | GitHub Actions |
 
 ---
 
-#### Task 3.3 Code Quality
+## Design principles
 
-Configure:
-- [ ] clang-format
-- [ ] clang-tidy
-- [ ] cppcheck
+- **Separation of concerns** — each module has a single responsibility
+- **Loose coupling** — modules interact through well-defined interfaces
+- **Testability by design** — every public component is independently testable
+- **Value semantics** — prefer plain structs and values when ownership is simple
+- **Composition over inheritance** — behaviors are composed, not inherited
+- **`const` by default** — immutability where possible
+- **Readability over cleverness** — code is written for humans first
 
----
-
-#### Task 3.4 CI (Optional)
-
-GitHub Actions:
-- [ ] Build
-- [ ] Run tests
-- [ ] Static analysis
+Every architectural decision is made to produce a codebase that is clear,
+maintainable, and a genuine portfolio piece.
 
 ---
 
-### Milestone 4 — Core Library
+## License
 
-Create namespace:
-```cpp
-namespace trading
-{
-}
-```
----
-
-Task 4.1 Common Types
-
-Create:
-
-- Price
-- Timestamp
-- Volume
-- Symbol
-- TimeFrame
-
----
-
-Task 4.2 Enums
-
-- [ ] OrderType
-- [ ] TradeDirection
-- [ ] OrderStatus
-- [ ] IndicatorType
-- [ ] SignalType
-
----
-
-Task 4.3 Utilities
-
-Implement:
-- [ ] UUID generator
-- [ ] Time utilities
-- [ ] String utilities
-- [ ] File utilities
-
----
-
-### Milestone 5 — Configuration System
-
-Design config.json
-
-Example:
-```json
-{
-  "symbol": "EURUSD",
-  "timeframe": "4H",
-  "risk": 0.01
-}
-```
-Tasks:
-- [ ] Read JSON
-- [ ] Validate fields
-- [ ] Default values
-- [ ] Error handling
-
----
-
-### Milestone 6 — Logging System
-
-Create Logger
-
-Capabilities:
-- [ ] Console logging
-- [ ] File logging
-- [ ] Log levels:
-    - [ ] INFO
-    - [ ] DEBUG
-    - [ ] WARNING
-    - [ ] ERROR
-
----
-
-### Milestone 7 — Error Handling
-
-Design policy for handling:
-- Network failure
-- Invalid candle
-- Missing file
-- Invalid configuration
-
-Guideline: Avoid throwing exceptions everywhere. Use `std::expected` (or an equivalent) where appropriate for recoverable errors, and reserve exceptions for truly exceptional situations.
-
----
-
-### Milestone 8 — Testing
-- [ ] Install GoogleTest
-- [ ] Write first tests:
-    - [ ] Config Parser
-    - [ ] Logger
-    - [ ] Utilities
-    - [ ] Time conversion
-
-Target: 100% passing tests
-
----
-
-### Milestone 9 — Documentation
-
-Write README.md
-
-Include:
-- Build instructions
-- Dependencies
-- Architecture
-- Folder structure
-- Coding guidelines
-
----
-
-### Design Decisions Log
->Recommended Addition: Since this is intended to be a learning journey, keep a docs/design-decisions/ folder from the very beginning. For every major architectural choice, write a one-page design note.
-
-Examples of decisions to document:
-- Why use dependency injection?
-- Why value types for Candle?
-- Why `std::unique_ptr` here?
-- Why choose spdlog over other logging libraries?
-- Why use `std::expected` for error handling?
-
-This habit mirrors professional engineering practices and will make the project an excellent portfolio piece because you'll be able to explain not just what you built, but why you built it that way.
----
-### Notes
-- Every phase should teach a new set of engineering skills
-- Focus on clean architecture and production-quality code
-- Treat this as a learning journey in modern C++ development
-- Document all design decisions for portfolio presentation
+This project is a personal learning and development effort.
