@@ -70,7 +70,7 @@ void CSVReader::set_delimiter(std::string delimiter) {
   this->delimiter = std::move(delimiter);
 }
 
-void CSVReader::set_path(std::filesystem::path &&path_, bool has_header_) {
+void CSVReader::set_path(std::filesystem::path path_, bool has_header_) {
   if (!std::filesystem::exists(path_)) {
     std::stringstream error;
     error << "File: " << path_.string() << " does not exist";
@@ -79,7 +79,7 @@ void CSVReader::set_path(std::filesystem::path &&path_, bool has_header_) {
   if (is_open()) {
     csv_file.close();
   }
-  path = std::move(path_);
+  path = path_;
   has_header = has_header_;
   is_header_processed = false;
   header.clear();
@@ -97,7 +97,7 @@ CSVRow CSVReader::parse_line(std::string &line) noexcept {
   if (!line.empty() && line.back() == '\r') {
     line.pop_back();
   }
-  return CSVLineParser()(line, delimiter);
+  return line_parser(line, delimiter);
 }
 
 const CSVRow &CSVReader::get_header() {
