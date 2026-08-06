@@ -212,10 +212,23 @@ Windows-generated CSVs work unchanged on Linux/macOS.
 
 ## CMake integration
 
-The library is a static library aliased as `TradingEngine::Core::CSVParser`:
+The library is a static library aliased as `TradingEngine::Core::CSVParser`.
+
+| CMake variable | Value |
+|---------------|-------|
+| Project version | `1.0.0` |
+| C++ standard | C++20 |
+| Test target | `test_csv` (GoogleTest) |
 
 ```cmake
 target_link_libraries(my_app PRIVATE TradingEngine::Core::CSVParser)
+```
+
+### Running the tests
+
+```bash
+cmake --build build --target test_csv
+ctest --test-dir build -R Core.CSV.Parser
 ```
 
 Requires C++20.
