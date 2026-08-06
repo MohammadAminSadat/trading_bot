@@ -6,7 +6,7 @@
 #include <limits>
 #include <vector>
 
-#include "Core/candle.hpp"
+#include "MarketData/candle.hpp"
 
 using namespace TradingEngine::MarketData;
 

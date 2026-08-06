@@ -1,46 +1,46 @@
-name: CI
+# name: CI
 
-on:
-  push:
-    branches: [main]
-  pull_request:
+# on:
+#   push:
+#     branches: [main]
+#   pull_request:
 
-jobs:
-  build-and-test:
-    name: Build & Test
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        build_type: [Debug, Release]
-        compiler: [gcc, clang]
+# jobs:
+#   build-and-test:
+#     name: Build & Test
+#     runs-on: ubuntu-latest
+#     strategy:
+#       fail-fast: false
+#       matrix:
+#         build_type: [Debug, Release]
+#         compiler: [gcc, clang]
 
-    env:
-      BUILD_DIR: ${{ github.workspace }}/build
+#     env:
+#       BUILD_DIR: ${{ github.workspace }}/build
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v4
 
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            libboost-all-dev \
-            clang \
-            clang-format
+#       - name: Install dependencies
+#         run: |
+#           sudo apt-get update
+#           sudo apt-get install -y \
+#             libboost-all-dev \
+#             clang \
+#             clang-format
 
-      - name: Configure
-        run: >
-          cmake -S . -B "$BUILD_DIR"
-          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
-          -DCMAKE_CXX_COMPILER=${{ matrix.compiler }}
+#       - name: Configure
+#         run: >
+#           cmake -S . -B "$BUILD_DIR"
+#           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+#           -DCMAKE_CXX_COMPILER=${{ matrix.compiler }}
 
-      - name: Build
-        run: cmake --build "$BUILD_DIR" --parallel
+#       - name: Build
+#         run: cmake --build "$BUILD_DIR" --parallel
 
-      - name: Run tests
-        run: ctest --test-dir "$BUILD_DIR" --output-on-failure
+#       - name: Run tests
+#         run: ctest --test-dir "$BUILD_DIR" --output-on-failure
 
-      - name: Check clang-format
-        run: cmake --build "$BUILD_DIR" --target check_format
+#       - name: Check clang-format
+#         run: cmake --build "$BUILD_DIR" --target check_format

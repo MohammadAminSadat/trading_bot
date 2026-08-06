@@ -4,8 +4,7 @@
 #include <cstdint>
 #include <vector>
 
-namespace TradingEngine {
-namespace MarketData {
+namespace TradingEngine::MarketData {
 
 using TimeStamp = std::chrono::sys_time<std::chrono::seconds>;
 using Price = double;
@@ -71,5 +70,4 @@ private:
   std::vector<Candle> candles;
 };
 
-} // namespace MarketData
-} // namespace TradingEngine
+} // namespace TradingEngine::MarketData
