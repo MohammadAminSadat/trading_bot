@@ -139,7 +139,9 @@ void set_path(std::filesystem::path path, bool has_header);
 ```
 
 - Throws if the new path does not exist.
-- Closes the current file and resets internal state.
+- Closes the current file and resets internal state (including any EOF flags).
+- Existing iterators remain bound to the reader: incrementing one after a
+  `set_path` continues reading from the newly-set file.
 
 ```cpp
 void set_delimiter(std::string delimiter);
@@ -154,6 +156,8 @@ void reset();
 ```
 
 - Seeks the file back to byte 0 and clears header/processing flags.
+- Also clears EOF/fail stream state, so it is safe to call after the file has
+  been fully consumed.
 - Also called automatically by `begin()`.
 
 ### Inspecting state
@@ -198,6 +202,51 @@ Windows-generated CSVs work unchanged on Linux/macOS.
 
 ---
 
+## Move semantics
+
+`CSVReader` is move-only (copy is deleted). Moving transfers the lazy file
+state, so a moved-to reader can continue reading the same file, including
+header access:
+
+```cpp
+CSVReader a{"data.csv"};
+CSVReader b{std::move(a)}; // b can now read data.csv
+
+CSVReader c{other};
+c = std::move(b);          // move assignment
+```
+
+---
+
+## Header and iteration
+
+Because `begin()` calls `reset()` internally, the reader can be iterated
+more than once, and calling `get_header()` before iterating still produces
+all data rows (the header is never yielded by iteration):
+
+```cpp
+auto header = reader.get_header();
+for (const auto& row : reader) {
+  // iterates every data row, header not included
+}
+```
+
+---
+
+## Known limitations
+
+- **Quoted CSV (RFC 4180) is not supported.** Quote characters are treated
+  as ordinary characters, so a delimiter inside quotes still splits the
+  field (`"a,b",c` yields `[""a", "b"", "c"]`), and escaped quotes are not
+  unescaped. This is documented in the test suite so that implementing RFC
+  4180 support later is a deliberate, tested change.
+- **Trailing empty fields are preserved** (`A,B,` yields three fields), which
+  is a deliberate design choice, not a bug.
+- **Incrementing an end iterator throws `std::logic_error`** rather than
+  relying on undefined behavior.
+
+---
+
 ## Error handling
 
 | Scenario | Exception |
@@ -212,10 +261,23 @@ Windows-generated CSVs work unchanged on Linux/macOS.
 
 ## CMake integration
 
-The library is a static library aliased as `TradingEngine::Core::CSVParser`:
+The library is a static library aliased as `TradingEngine::Core::CSVParser`.
+
+| CMake variable | Value |
+|---------------|-------|
+| Project version | `1.0.0` |
+| C++ standard | C++20 |
+| Test target | `test_csv` (GoogleTest) |
 
 ```cmake
 target_link_libraries(my_app PRIVATE TradingEngine::Core::CSVParser)
+```
+
+### Running the tests
+
+```bash
+cmake --build build --target test_csv
+ctest --test-dir build -R Core.CSV.Parser
 ```
 
 Requires C++20.

@@ -11,7 +11,6 @@
 
 namespace TradingEngine::Core {
 using CSVRow = std::vector<std::string>;
-class CSVReaderIterator;
 
 class CSVLineParser {
 public:
@@ -105,5 +104,12 @@ private:
   std::string delimiter;
   CSVRow header;
 };
+
+inline bool operator==(std::default_sentinel_t s, const CSVReader::CSVReaderIterator &it) noexcept {
+  return it == s;
+}
+inline bool operator!=(std::default_sentinel_t s, const CSVReader::CSVReaderIterator &it) noexcept {
+  return it != s;
+}
 
 } // namespace TradingEngine::Core
