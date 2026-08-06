@@ -1,4 +1,5 @@
 add_library(candle src/candle.cpp)
 add_library(TradingEngine::MarketData::candle ALIAS candle)
 target_include_directories(candle PUBLIC inc)
+target_link_libraries(candle PUBLIC TradingEngine::Core::Core)
 add_subdirectory(test)

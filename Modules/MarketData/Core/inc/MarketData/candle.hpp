@@ -1,12 +1,12 @@
 #pragma once
 
+#include <Core/Core.hpp>
 #include <chrono>
 #include <cstdint>
 #include <vector>
 
 namespace TradingEngine::MarketData {
 
-using TimeStamp = std::chrono::sys_time<std::chrono::seconds>;
 using Price = double;
 
 enum class TimeFrame {
@@ -28,10 +28,10 @@ struct Candle {
   Price close;
   std::int64_t volume;
   TimeFrame time_frame;
-  TimeStamp time_stamp;
+  Core::TimeStamp time_stamp;
 
   Candle(Price open, Price high, Price low, Price close, std::int64_t volume, TimeFrame time_frame,
-         TimeStamp time_stamp)
+         Core::TimeStamp time_stamp)
       : open{open},
         high{high},
         low{low},
