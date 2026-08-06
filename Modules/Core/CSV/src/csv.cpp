@@ -1,18 +1,35 @@
 #include "Core/csv.hpp"
 
-#include <iostream>
+TradingEngine::Core::CSVRow TradingEngine::Core::CSVLineParser::operator()(
+    std::string_view line, std::string_view delimiter) const {
+  CSVRow fields;
+  size_t position{0};
+  while (position <= line.length()) {
+    size_t next = line.find(delimiter, position);
+    if (next == std::string::npos) {
+      fields.emplace_back(line.substr(position));
+      break;
+    }
+
+    fields.emplace_back(line.substr(position, next - position));
+    position = next + delimiter.length();
+  }
+
+  return fields;
+}
+
 namespace TradingEngine::Core {
 
-CSVParser::CSVParser(std::filesystem::path &&path_, bool has_header, std::string delimiter)
-    : path{std::move(path_)}, has_header{has_header}, delimiter{std::move(delimiter)} {
+CSVReader::CSVReader(std::filesystem::path path_, bool has_header, std::string delimiter)
+    : path{path_}, has_header{has_header}, delimiter{std::move(delimiter)} {
   if (!std::filesystem::exists(path)) {
     std::stringstream error;
-    error << "File: " << path.string() << " does not exist !!!";
+    error << "File: " << path.string() << " does not exist";
     throw std::runtime_error(error.str());
   }
 }
 
-void CSVParser::parse_header() {
+void CSVReader::parse_header() {
   if (!is_open()) {
     open();
   }
@@ -25,7 +42,7 @@ void CSVParser::parse_header() {
   header = parse_line(line);
 }
 
-std::optional<CSVRow> CSVParser::get_next() {
+std::optional<CSVRow> CSVReader::get_next() {
   if (!is_open()) {
     open();
   }
@@ -39,16 +56,21 @@ std::optional<CSVRow> CSVParser::get_next() {
   return parse_line(line);
 }
 
-void CSVParser::open() {
+void CSVReader::open() {
   if (!is_open()) {
     csv_file.open(path);
   }
+  if (!csv_file) {
+    std::stringstream error;
+    error << "File: " << path.string() << " does not exist";
+    throw std::runtime_error(error.str());
+  }
 }
-void CSVParser::set_delimiter(std::string delimiter) {
+void CSVReader::set_delimiter(std::string delimiter) {
   this->delimiter = std::move(delimiter);
 }
 
-void CSVParser::set_path(std::filesystem::path &&path_, bool has_header_) {
+void CSVReader::set_path(std::filesystem::path &&path_, bool has_header_) {
   if (!std::filesystem::exists(path_)) {
     std::stringstream error;
     error << "File: " << path_.string() << " does not exist";
@@ -61,29 +83,24 @@ void CSVParser::set_path(std::filesystem::path &&path_, bool has_header_) {
   has_header = has_header_;
   is_header_processed = false;
   header.clear();
+  csv_file.clear();
 }
 
-CSVRow CSVParser::parse_line(const std::string &line_) noexcept {
-  CSVRow fields;
-  size_t position{0};
-  auto line{line_};
+void CSVReader::reset() {
+  csv_file.clear();
+  csv_file.seekg(0);
+  is_header_processed = false;
+  header.clear();
+}
+
+CSVRow CSVReader::parse_line(std::string &line) noexcept {
   if (!line.empty() && line.back() == '\r') {
     line.pop_back();
   }
-  while (position < line.length()) {
-    size_t next = line.find(delimiter, position);
-    if (next == std::string::npos) {
-      fields.emplace_back(line.substr(position));
-      break;
-    }
-
-    fields.emplace_back(line.substr(position, next - position));
-    position = next + delimiter.length();
-  }
-
-  return fields;
+  return CSVLineParser()(line, delimiter);
 }
-const CSVRow &CSVParser::get_header() {
+
+const CSVRow &CSVReader::get_header() {
   if (!has_header) {
     throw std::logic_error("File Does not have header");
   }
@@ -92,7 +109,7 @@ const CSVRow &CSVParser::get_header() {
   }
   return header;
 }
-const CSVRow &CSVParser::get_header() const {
+const CSVRow &CSVReader::get_header() const {
   if (!has_header) {
     throw std::logic_error("File Does not have header");
   }
