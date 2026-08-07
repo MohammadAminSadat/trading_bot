@@ -28,11 +28,11 @@ struct Candle {
   Price high;
   Price low;
   Price close;
-  std::optional<std::int64_t> volume;
+  std::optional<int> volume;
   Core::Timestamp timestamp;
 
   Candle(Price open, Price high, Price low, Price close, Core::Timestamp ts,
-         std::optional<std::int64_t> vol = std::nullopt)
+         std::optional<int> vol = std::nullopt)
       : open(open), high(high), low(low), close(close), timestamp(ts), volume(vol) {}
   [[nodiscard]]
   bool validate() const noexcept {
@@ -61,7 +61,7 @@ public:
   void reserve(std::size_t size) { candles.reserve(size); }
   void push_back(Candle candle) { candles.push_back(std::move(candle)); }
   void emplace_back(Price open, Price high, Price low, Price close, Core::Timestamp time_stamp,
-                    std::optional<std::int64_t> volume = std::nullopt) {
+                    std::optional<int> volume = std::nullopt) {
     candles.emplace_back(open, high, low, close, time_stamp, volume);
   }
   Candle &operator[](size_t index) { return candles[index]; }
