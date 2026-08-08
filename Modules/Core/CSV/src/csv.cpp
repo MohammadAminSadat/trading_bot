@@ -87,10 +87,10 @@ void CSVReader::set_path(std::filesystem::path path_, bool has_header_) {
 }
 
 void CSVReader::reset() {
-  if (!csv_file) {
+  csv_file.clear();
+  if (!csv_file.is_open()) {
     return;
   }
-  csv_file.clear();
   csv_file.seekg(0);
   is_header_processed = false;
   header.clear();
