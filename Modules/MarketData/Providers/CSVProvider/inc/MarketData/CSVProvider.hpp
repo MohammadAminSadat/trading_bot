@@ -13,7 +13,7 @@
 namespace TradingEngine::MarketData {
 
 using TimestampParser = std::function<Core::Timestamp(std::string_view)>;
-inline Core::Timestamp default_timestamp_parser(std::string_view);
+Core::Timestamp default_timestamp_parser(std::string_view);
 struct ColumnMapping {
   size_t timestamp;
   size_t open;

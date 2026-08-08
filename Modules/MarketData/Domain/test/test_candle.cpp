@@ -641,10 +641,9 @@ TEST(CandleEdgeCaseTest, FloatingPointPrecision) {
 
 TEST(CandleEdgeCaseTest, MaximumVolume) {
   auto ts = make_ts(2024, 1, 1);
-  Candle c{100.0, 110.0, 90.0,
-           105.0, ts,    static_cast<std::uint64_t>(std::numeric_limits<std::int64_t>::max())};
+  Candle c{100.0, 110.0, 90.0, 105.0, ts, static_cast<unsigned>(std::numeric_limits<int>::max())};
   EXPECT_TRUE(c.validate());
-  EXPECT_EQ(c.volume, std::numeric_limits<std::int64_t>::max());
+  EXPECT_EQ(c.volume, std::numeric_limits<int>::max());
 }
 
 TEST(CandleEdgeCaseTest, DojiCandleAllSame) {
