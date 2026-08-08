@@ -427,8 +427,8 @@ TEST(CSVReader, IteratorsFromSameReaderCompare) {
   EXPECT_EQ(it, copy);
 
   // default-constructed iterators compare equal
-  TEC::CSVReader::CSVReaderIterator e1;
-  TEC::CSVReader::CSVReaderIterator e2;
+  TEC::CSVReader::Iterator e1;
+  TEC::CSVReader::Iterator e2;
   EXPECT_EQ(e1, e2);
   EXPECT_EQ(e1, end);
 }
@@ -446,8 +446,8 @@ TEST(CSVReader, IteratorArrowOperator) {
   EXPECT_EQ((*it)[0], "1");
 }
 
-TEST(CSVReaderIterator, IncrementEndIteratorThrows) {
-  auto end = TEC::CSVReader::CSVReaderIterator{};
+TEST(Iterator, IncrementEndIteratorThrows) {
+  auto end = TEC::CSVReader::Iterator{};
   EXPECT_THROW(++end, std::logic_error);
 }
 

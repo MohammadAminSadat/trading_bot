@@ -19,7 +19,7 @@ public:
 
 class CSVReader {
 public:
-  class CSVReaderIterator {
+  class Iterator {
   public:
     using iterator_category = std::input_iterator_tag;
     using value_type = CSVRow;
@@ -27,29 +27,29 @@ public:
     using pointer = const CSVRow *;
     using reference = const CSVRow &;
 
-    CSVReaderIterator() = default;
-    explicit CSVReaderIterator(CSVReader &reader) : reader{&reader}, current{reader.get_next()} {};
+    Iterator() = default;
+    explicit Iterator(CSVReader &reader) : reader{&reader}, current{reader.get_next()} {};
 
     reference operator*() const noexcept { return *current; };
     pointer operator->() const noexcept { return &*current; };
 
-    CSVReaderIterator &operator++() {
+    Iterator &operator++() {
       if (!reader) {
         throw std::logic_error("Incrementing end iterator");
       }
       current = reader->get_next();
       return *this;
     };
-    CSVReaderIterator operator++(int) {
+    Iterator operator++(int) {
       auto temp{*this};
       current = reader->get_next();
       return temp;
     };
 
-    bool operator==(const CSVReaderIterator &other) const noexcept {
+    bool operator==(const Iterator &other) const noexcept {
       return (reader == other.reader && current.has_value() == other.current.has_value());
     }
-    bool operator!=(const CSVReaderIterator &other) const noexcept { return !(*this == other); }
+    bool operator!=(const Iterator &other) const noexcept { return !(*this == other); }
 
     bool operator==(std::default_sentinel_t) const noexcept {
       return (reader == nullptr || !current.has_value());
@@ -62,7 +62,7 @@ public:
   };
 
 public:
-  using iterator = CSVReaderIterator;
+  using iterator = Iterator;
   using sentinel = std::default_sentinel_t;
 
   explicit CSVReader(std::filesystem::path path, bool has_header = true,
@@ -73,7 +73,7 @@ public:
   bool operator!() const noexcept { return !csv_file; }
   iterator begin() {
     reset();
-    return CSVReaderIterator(*this);
+    return Iterator(*this);
   };
   sentinel end() noexcept { return std::default_sentinel; }
 
@@ -105,10 +105,10 @@ private:
   CSVRow header;
 };
 
-inline bool operator==(std::default_sentinel_t s, const CSVReader::CSVReaderIterator &it) noexcept {
+inline bool operator==(std::default_sentinel_t s, const CSVReader::Iterator &it) noexcept {
   return it == s;
 }
-inline bool operator!=(std::default_sentinel_t s, const CSVReader::CSVReaderIterator &it) noexcept {
+inline bool operator!=(std::default_sentinel_t s, const CSVReader::Iterator &it) noexcept {
   return it != s;
 }
 
