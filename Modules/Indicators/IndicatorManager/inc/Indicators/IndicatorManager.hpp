@@ -1,5 +1,5 @@
 #pragma once
-#include <Indicators/indicators.hpp>
+#include <Indicators/Indicators.hpp>
 #include <MarketData/candle.hpp>
 #include <memory>
 #include <vector>
