@@ -1,4 +1,5 @@
-add_library(MA STATIC src/MA.cpp)
-add_library(TradingEngine::Indicators::MA ALIAS MA)
-target_include_directories(MA PUBLIC inc)
-target_link_libraries(MA PUBLIC TradingEngine::Indicators::Domain)
+add_library(SMA STATIC src/SMA.cpp)
+add_library(TradingEngine::Indicators::SMA ALIAS SMA)
+target_include_directories(SMA PUBLIC inc)
+
+target_link_libraries(SMA PUBLIC TradingEngine::Indicators::Domain Boost::headers) 
