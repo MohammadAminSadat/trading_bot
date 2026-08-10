@@ -11,6 +11,8 @@ EMA::EMA(std::size_t period, double smoothing_factor)
   id_ = 2; // TODO : place holder fo now
 }
 
+EMA::EMA(std::size_t period) : EMA{period, 2.0} {};
+
 std::optional<SignalOutput> EMA::update(double value) noexcept {
   if (warm_up_) {
     previous_ema_ = value;

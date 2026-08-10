@@ -4,6 +4,7 @@
 namespace TradingEngine::Indicators {
 class EMA : public IIndicator {
   EMA(std::size_t, double);
+  explicit EMA(std::size_t);
   virtual ~EMA() override = default;
   virtual std::optional<IndicatorResult> update(const MarketData::Candle &) override;
   virtual std::optional<SignalOutput> update(double) noexcept;
