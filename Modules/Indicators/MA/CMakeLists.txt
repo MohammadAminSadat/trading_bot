@@ -9,3 +9,5 @@ add_library(TradingEngine::Indicators::EMA ALIAS EMA)
 target_include_directories(EMA PUBLIC inc)
 
 target_link_libraries(EMA PUBLIC TradingEngine::Indicators::Domain)
+
+add_subdirectory(Tests)

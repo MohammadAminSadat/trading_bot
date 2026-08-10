@@ -4,6 +4,7 @@
 
 namespace TradingEngine::Indicators {
 class MACD : public IIndicator {
+public:
   MACD(std::size_t, std::size_t, std::size_t);
   virtual ~MACD() override = default;
   virtual std::optional<IndicatorResult> update(const MarketData::Candle &) override;

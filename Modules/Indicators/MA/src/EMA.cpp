@@ -3,8 +3,8 @@
 namespace TradingEngine::Indicators {
 EMA::EMA(std::size_t period, double smoothing_factor)
     : period_{period},
-      smoothing_factor_{smoothing_factor_},
-      alpha_{smoothing_factor_ / (1 + static_cast<double>(period))} {
+      smoothing_factor_{smoothing_factor},
+      alpha_{smoothing_factor / (1 + static_cast<double>(period))} {
   if (period == 0) {
     throw std::invalid_argument("Period must not equal to 0");
   }
