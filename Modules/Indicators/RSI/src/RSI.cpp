@@ -1,7 +1,6 @@
 #include "Indicators/RSI.hpp"
 
 #include <cmath>
-#include <numeric>
 
 namespace TradingEngine::Indicators {
 RSI::RSI(std::size_t period) : period_{period}, buffer_{period + 1} {
@@ -42,17 +41,17 @@ std::optional<SignalOutput> RSI::update(double value) noexcept {
   }
   const double average_up{up_changes / static_cast<double>(period_)};
   const double average_down{down_changes / static_cast<double>(period_)};
-  if (average_down == 0 && average_up == 0) {
+  if (average_down == 0.0 && average_up == 0.0) {
     return SignalOutput{
         .signal1{50.0},
         .signal2{threshold_},
     };
-  } else if (average_down == 0) {
+  } else if (average_down == 0.0) {
     return SignalOutput{
         .signal1{100.0},
         .signal2{threshold_},
     };
-  } else if (average_up == 0) {
+  } else if (average_up == 0.0) {
     return SignalOutput{
         .signal1{0.0},
         .signal2{threshold_},
