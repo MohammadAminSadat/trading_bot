@@ -33,6 +33,7 @@ enum class SignalType {
   ZeroCross,
   TwoLineCross,
   PriceCross,
+  ThresholdCross,
 };
 
 using InputRequirements = std::vector<InputData>;
