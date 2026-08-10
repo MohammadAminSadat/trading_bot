@@ -3,6 +3,7 @@
 
 namespace TradingEngine::Indicators {
 class EMA : public IIndicator {
+public:
   EMA(std::size_t, double);
   explicit EMA(std::size_t);
   virtual ~EMA() override = default;

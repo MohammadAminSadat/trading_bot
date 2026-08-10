@@ -4,6 +4,7 @@
 
 namespace TradingEngine::Indicators {
 class ATR : public IIndicator {
+public:
   ATR(std::size_t);
   virtual ~ATR() override = default;
   virtual std::optional<IndicatorResult> update(const MarketData::Candle &) override;
