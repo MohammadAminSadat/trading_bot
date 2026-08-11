@@ -51,8 +51,8 @@ public:
     Iterator() = default;
     explicit Iterator(CSVProvider &provider) : provider{&provider}, current{provider.get_next()} {};
 
-    reference operator*() const noexcept { return *current; };
-    pointer operator->() const noexcept { return &*current; };
+    reference operator*() const { return *current; };
+    pointer operator->() const { return &*current; };
 
     Iterator &operator++() {
       if (!provider) {
@@ -88,7 +88,6 @@ public:
   std::optional<Candle> get_next();
   void reset() { reader.reset(); };
   iterator begin() {
-    reset();
     return Iterator(*this);
   };
   sentinel end() noexcept { return std::default_sentinel; }
