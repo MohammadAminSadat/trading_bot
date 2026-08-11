@@ -37,4 +37,5 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 include(ClangFormat)
 
 add_subdirectory(Modules)
+add_subdirectory(CLI)
 add_subdirectory(App)

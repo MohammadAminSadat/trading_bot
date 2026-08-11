@@ -1,4 +1,7 @@
+#include <CLI/REPL.hpp>
 #include <iostream>
 
-int main(int argc, char const *argv[]) {
+int main() {
+  TradingEngine::CLI::REPL application("TradingEngine");
+  return application.run();
 }

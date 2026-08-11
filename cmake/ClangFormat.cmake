@@ -5,7 +5,8 @@ if(CLANG_FORMAT_EXE)
     GLOB_RECURSE ALL_SOURCES
     CONFIGURE_DEPENDS
     "${CMAKE_SOURCE_DIR}/App/*.cpp" "${CMAKE_SOURCE_DIR}/App/*.hpp"
-    "${CMAKE_SOURCE_DIR}/Modules/*.cpp" "${CMAKE_SOURCE_DIR}/Modules/*.hpp")
+    "${CMAKE_SOURCE_DIR}/Modules/*.cpp" "${CMAKE_SOURCE_DIR}/Modules/*.hpp"
+    "${CMAKE_SOURCE_DIR}/CLI/*.cpp" "${CMAKE_SOURCE_DIR}/CLI/*.hpp")
 
   add_custom_target(
     format
