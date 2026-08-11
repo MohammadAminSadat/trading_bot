@@ -1,4 +1,5 @@
 #pragma once
+#include <CLI/Lexer.hpp>
 #include <iostream>
 #include <string>
 
@@ -8,13 +9,13 @@ public:
   REPL() = default;
   REPL(std::string);
   int run();
-  ~REPL() = default;
 
 private:
   void initialize();
   void print_help();
   void clean();
-  std::string application_name_{"Trading_Engine"};
+  const Lexer lexer_{};
+  std::string application_name_{"TradingEngine"};
 };
 
 } // namespace TradingEngine::CLI

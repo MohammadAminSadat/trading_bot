@@ -26,6 +26,8 @@ int REPL::run() {
       std::cout << '\n';
       return EXIT_SUCCESS;
     }
+    std::vector<Token> tokens{lexer_.lex_input(line)};
+
     std::cout << "\n";
     if (line == "exit") {
       std::cout << "Have a nice day.\n";
