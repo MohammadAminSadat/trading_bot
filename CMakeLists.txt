@@ -7,29 +7,30 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 
 include(FetchContent)
-FetchContent_Declare(
-  spdlog
-  GIT_REPOSITORY https://github.com/gabime/spdlog.git
-  GIT_TAG        79524dd
-)
   
-FetchContent_Declare(
-  googletest
-  GIT_REPOSITORY https://github.com/google/googletest.git
-  GIT_TAG        52eb810
-)
-FetchContent_Declare(
-  eigen
-  GIT_REPOSITORY https://gitlab.com/libeigen/eigen.git
-  GIT_TAG        bc3b3987
-)
-      
-FetchContent_MakeAvailable(spdlog googletest eigen)
-if(WIN32)
-  cmake_policy(SET CMP0167 OLD)
+if (GTest_FOUND)
+    message(STATUS "Using system Google Test")
+    set(GTEST_LIBRARIES GTest::gtest GTest::gtest_main)
 else()
+    message(STATUS "System Google Test not found, will fetch from GitHub")
+    include(FetchContent)
+    FetchContent_Declare(
+        googletest
+        URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
+        GIT_TAG v1.18.0
+    )
+    FetchContent_MakeAvailable(googletest)
+    set(GTEST_LIBRARIES gtest gtest_main)
+endif()
+
+if(CMAKE_VERSION VERSION_GREATER_EQUAL 4.0)
+  cmake_policy(SET CMP0167 OLD)
+endif()
+
+if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.23)
   cmake_policy(SET CMP0144 OLD)
 endif()
+
 find_package(Boost REQUIRED)
 enable_testing()
 
