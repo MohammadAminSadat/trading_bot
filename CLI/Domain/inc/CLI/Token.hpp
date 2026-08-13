@@ -8,7 +8,7 @@ enum class TokenType {
   SPECIAL,
   NUMBER,
   STRING,
-  END,
+  END_OF_LINE,
 };
 
 struct Token {
