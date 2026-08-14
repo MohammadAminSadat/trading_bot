@@ -14,8 +14,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build and test Docker image
+      - name: Build Docker image
+        run: docker build --target builder -t trading_engine_builder -f docker/dockerfile .
+
+      - name: build binary
         run: docker build -t trading_engine -f docker/dockerfile .
+
+      - name: Run debug tests
+        run: |
+              docker run --rm trading_engine_builder \
+                ctest --test-dir /app/build/debug --output-on-failure
+                
+      - name: Run release tests
+        run: |
+              docker run --rm trading_engine_builder \
+                ctest --test-dir /app/build/release --output-on-failure
 
       - name: Create container
         run: docker create --name trading_engine_tmp trading_engine

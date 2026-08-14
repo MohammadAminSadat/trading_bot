@@ -1,3 +1,4 @@
+#stage 1
 FROM ubuntu:24.04 AS builder
 
 RUN apt-get update && \
@@ -12,26 +13,24 @@ RUN apt-get update && \
         libbz2-dev \ 
         libz-dev \
         libicu-dev \
-        libboost-all-dev 
+        libboost-all-dev \
+        ninja-build
 
 
 WORKDIR /app
 
 COPY . .
 
-RUN cmake -S . -B build
-RUN cmake --build build
+RUN cmake --preset debug 
+RUN cmake --build --preset debug 
+RUN cmake --preset release 
+RUN cmake --build --preset release 
 
-RUN ctest --test-dir /app/build -C Debug -T test --output-on-failure -R Core.*
-RUN ctest --test-dir /app/build -C Debug -T test --output-on-failure -R Indicators.*
-RUN ctest --test-dir /app/build -C Debug -T test --output-on-failure -R MarketData.*
-
+# stage 2
 FROM ubuntu:24.04 AS runtime
 
 WORKDIR /app
 
-RUN mkdir /app/TradingEngine
+COPY --from=builder /app/build/release/App/TradingEngine /app/
 
-COPY --from=builder /app/build/App/TradingEngine /app/TradingEngine
-
-CMD ["/app/TradingEngine/TradingEngine"]
+CMD ["/app/TradingEngine"]
