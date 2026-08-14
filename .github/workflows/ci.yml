@@ -17,6 +17,21 @@ jobs:
       - name: Build and test Docker image
         run: docker build -t trading_engine -f docker/dockerfile .
 
+      - name: Create container
+        run: docker create --name trading_engine_tmp trading_engine
+
+      - name: Extract binary
+        run: docker cp trading_engine_tmp:/app/TradingEngine ./TradingEngine
+
+      - name: Remove container
+        run: docker rm trading_engine_tmp
+      
+      - name: Upload Trading Engine
+        uses: actions/upload-artifact@v4
+        with:
+          name: trading-engine
+          path: TradingEngine
+
 #       matrix:
 #         build_type: [Debug, Release]
 #         compiler: [gcc, clang]
