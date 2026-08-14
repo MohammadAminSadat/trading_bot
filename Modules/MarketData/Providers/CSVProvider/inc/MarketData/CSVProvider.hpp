@@ -87,9 +87,7 @@ public:
   ~CSVProvider() = default;
   std::optional<Candle> get_next();
   void reset() { reader.reset(); };
-  iterator begin() {
-    return Iterator(*this);
-  };
+  iterator begin() { return Iterator(*this); };
   sentinel end() noexcept { return std::default_sentinel; }
 
 private:
