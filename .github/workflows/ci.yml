@@ -8,6 +8,10 @@ permissions:
   contents: read
   packages: write
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
 jobs:
   build-and-test:
     name: Build & Test
@@ -59,11 +63,15 @@ jobs:
       
       - name: Tag Docker image
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: docker tag trading_engine ghcr.io/${{ github.repository }}:latest
+        run: |
+              IMAGE_NAME=$(echo "${REGISTRY}/${IMAGE_NAME}" | tr '[:upper:]' '[:lower:]')
+              docker tag trading_engine "${IMAGE_NAME}:latest"
       
       - name: Push Docker image
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: docker push ghcr.io/${{ github.repository }}:latest
+        run: |
+              IMAGE_NAME=$(echo "${REGISTRY}/${IMAGE_NAME}" | tr '[:upper:]' '[:lower:]')
+              docker push "${IMAGE_NAME}:latest"
 
 #       matrix:
 #         build_type: [Debug, Release]
