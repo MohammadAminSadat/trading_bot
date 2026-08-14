@@ -1,16 +1,22 @@
-# name: CI
+name: CI
 
-# on:
-#   push:
-#     branches: [main]
-#   pull_request:
+on:
+  push:
+  pull_request:
 
-# jobs:
-#   build-and-test:
-#     name: Build & Test
-#     runs-on: ubuntu-latest
-#     strategy:
-#       fail-fast: false
+jobs:
+  build-and-test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build and test Docker image
+        run: docker build -t trading_engine -f docker/dockerfile .
+
 #       matrix:
 #         build_type: [Debug, Release]
 #         compiler: [gcc, clang]
@@ -18,9 +24,6 @@
 #     env:
 #       BUILD_DIR: ${{ github.workspace }}/build
 
-#     steps:
-#       - name: Checkout
-#         uses: actions/checkout@v4
 
 #       - name: Install dependencies
 #         run: |
