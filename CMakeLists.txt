@@ -7,24 +7,15 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 
 include(FetchContent)
-FetchContent_Declare(
-  spdlog
-  GIT_REPOSITORY https://github.com/gabime/spdlog.git
-  GIT_TAG        79524dd
-)
   
 FetchContent_Declare(
   googletest
-  GIT_REPOSITORY https://github.com/google/googletest.git
-  GIT_TAG        52eb810
-)
-FetchContent_Declare(
-  eigen
-  GIT_REPOSITORY https://gitlab.com/libeigen/eigen.git
-  GIT_TAG        bc3b3987
+  # GIT_REPOSITORY https://github.com/google/googletest.git
+  # GIT_TAG        52eb810
+  URL https://github.com/google/googletest/archive/refs/tags/v1.18.0.tar.gz
 )
       
-FetchContent_MakeAvailable(spdlog googletest eigen)
+FetchContent_MakeAvailable(googletest)
 if(WIN32)
   cmake_policy(SET CMP0167 OLD)
 else()
