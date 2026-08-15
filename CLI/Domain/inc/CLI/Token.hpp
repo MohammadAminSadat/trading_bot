@@ -5,9 +5,15 @@ namespace TradingEngine::CLI {
 
 enum class TokenType {
   IDENTIFIER,
-  SPECIAL,
   NUMBER,
   STRING,
+  OPEN_PARENTHES,
+  CLOSE_PARENTHES,
+  EQUAL,
+  COMMA,
+  PLUS,
+  MINUS,
+  INVALID,
   END_OF_LINE,
 };
 
