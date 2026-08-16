@@ -74,10 +74,15 @@ std::string_view Lexer::scan_next_lexeme(std::string_view &input) const {
     } else if (std::isspace(static_cast<unsigned char>(input[i]))) {
       break;
     } else if (is_literal(input[i])) {
-      if (i == 0) {
-        i++;
+      const bool is_scientific_number = i > 0 && (input[i] == '-' || input[i] == '+') &&
+                                        (input[i - 1] == 'e' || input[i - 1] == 'E');
+
+      if (!is_scientific_number) {
+        if (i == 0) {
+          i++;
+        }
+        break;
       }
-      break;
     }
     i++;
   }
