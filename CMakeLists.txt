@@ -10,7 +10,7 @@ include(FetchContent)
   
 if (GTest_FOUND)
     message(STATUS "Using system Google Test")
-    set(GTEST_LIBRARIES GTest::gtest GTest::gtest_main)
+    set(GTEST_LIBRARIES GTest::gtest GTest::gtest_main) 
 else()
     message(STATUS "System Google Test not found, will fetch from GitHub")
     include(FetchContent)
